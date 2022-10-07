@@ -18,6 +18,7 @@ function App() {
   const [wrongLetters, setWrongLetters] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   let [selectedWord, setSelectedWord] = useState("");
+  const firstRender = true;
 
   const newWords = () => {
     axios.get("https://random-word-api.herokuapp.com/word")
@@ -31,11 +32,11 @@ function App() {
   };
 
   useEffect(() => {
-    newWords();
-  }, []);
-
-  useEffect(() => {
     // newWords();
+    if (!firstRender) {
+      newWords();
+    }
+
     const handleKeydown = (event) => {
       const { key, keyCode } = event;
       if (playable && keyCode >= 65 && keyCode <= 90) {
@@ -60,7 +61,7 @@ function App() {
     window.addEventListener('keydown', handleKeydown);
 
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [correctLetters, wrongLetters, playable, selectedWord]);
+  }, [correctLetters, wrongLetters, playable, selectedWord, firstRender]);
 
   function playAgain() {
     setPlayable(true);
