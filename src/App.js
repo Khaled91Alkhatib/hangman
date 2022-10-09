@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Header from './components/Header';
 import Figure from './components/Figure';
@@ -9,34 +9,35 @@ import Notification from './components/Notification';
 import { showNotification as show } from './helpers/Helpers'; /* since we are using showNotification as state we can't use the same name so we change it */
 import "./styles/App.scss";
 
-// const words = ['application', 'universe', 'lot', 'development', 'evolution', 'basic', 'flight', 'vehicle'];
-// let selectedWord = words[Math.floor(Math.random() * words.length)];
-
 function App() {
   const [playable, setPlayable] = useState(true);
   const [correctLetters, setCorrectLetters] = useState([]);
   const [wrongLetters, setWrongLetters] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
   let [selectedWord, setSelectedWord] = useState("");
-  const firstRender = true;
 
-  const newWords = () => {
-    axios.get("https://random-word-api.herokuapp.com/word")
+  const controllerRef = useRef(new AbortController());
+
+  const newWords = useCallback(() => { // when it rerenders, it uses the old function 
+    axios.get("https://random-word-api.herokuapp.com/word", {signal: controllerRef.current.signal}) // to abort a second axios call (react18 renders twice)
       .then((response) => {
         setSelectedWord(response.data[0]);
-        console.log('response', response.data[0]);
+        // console.log('response', response.data[0]);
       })
       .catch((error) => {
         console.log("error", error);
       });
-  };
+  }, []);
 
   useEffect(() => {
-    // newWords();
-    if (!firstRender) {
-      newWords();
+    newWords()
+    const controller = controllerRef.current
+    return () => {
+      controller.abort()
     }
+  }, [newWords])
 
+  useEffect(() => {
     const handleKeydown = (event) => {
       const { key, keyCode } = event;
       if (playable && keyCode >= 65 && keyCode <= 90) {
@@ -61,15 +62,14 @@ function App() {
     window.addEventListener('keydown', handleKeydown);
 
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, [correctLetters, wrongLetters, playable, selectedWord, firstRender]);
+  }, [correctLetters, wrongLetters, playable, selectedWord]);
 
   function playAgain() {
     setPlayable(true);
     // we need to empty arrays
     setCorrectLetters([]);
     setWrongLetters([]);
-    // const random = Math.floor(Math.random() * words.length);
-    selectedWord = newWords();
+    newWords();
   }
 
   return (
