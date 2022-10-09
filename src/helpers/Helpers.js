@@ -1,3 +1,4 @@
+
 export function showNotification(setter) {
   setter(true);
   setTimeout(() => {
@@ -7,7 +8,7 @@ export function showNotification(setter) {
 
 export function checkWin(correct, wrong, word) {
   let status = "win";
-
+  
   // check for win
   word.split("").forEach(letter => {
     if (!correct.includes(letter)) {
@@ -19,5 +20,10 @@ export function checkWin(correct, wrong, word) {
   if (wrong.length === 6) {
     status = "lose";
   }
+
+  if (word === "") {
+    status = ""
+  }
+
   return status;
 }
