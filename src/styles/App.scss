@@ -12,12 +12,6 @@ body {
   background-color: #34495e;
   color: #fff;
   font-family: Arial, Helvetica, sans-serif;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-  // align-items: center;
-  // height: 80vh;
-  // margin: 0;
   overflow: hidden;
 }
 
@@ -26,11 +20,10 @@ h1 {
 }
 
 .game-container {
-  // padding: 20px 30px;
   position: relative;
   margin: auto;
-  height: 350px;
-  width: 450px;
+  // height: 350px;
+  // width: 450px;
 }
 
 .figure-container {
@@ -48,7 +41,6 @@ h1 {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  // align-items: center;
   margin: 5em 0 3em 0;
 }
 
@@ -59,11 +51,12 @@ h1 {
   display: flex;
   flex-direction: column;
   text-align: right;
+  margin-left: 5em;
 }
 
-.wrong-letters-container p {
-  margin: 0 0 5px;
-}
+// .wrong-letters-container p {
+//   margin: 0 0 5px;
+// }
 
 .wrong-letters-container span {
   font-size: 24px;
@@ -142,4 +135,15 @@ h1 {
 
 .notification-container.show {
   transform: translateY(-50px);
+}
+
+@media only screen and (max-width: 500px) {
+  .figure-and-wrong {
+    flex-direction: column;
+  }
+  .wrong-letters-container {
+    text-align: center;
+    margin-left: 0;
+    margin-top: 2em;
+  }  
 }
